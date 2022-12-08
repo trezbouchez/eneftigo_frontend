@@ -1,25 +1,146 @@
-import logo from './logo.svg';
-import './App.css';
+// import 'regenerator-runtime/runtime';
+import React, { useContext } from 'react';
+import { Route, Routes } from "react-router-dom"
+import { EneftigoContext, EneftigoContextAware } from 'EneftigoContext';
 
-function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+import { createTheme, ThemeProvider } from '@mui/material/styles';
+import { PuffLoader } from 'react-spinners';
+import { Toaster } from 'react-hot-toast';
+
+import 'global.css';
+
+import "@near-wallet-selector/modal-ui/styles.css";
+
+import { SignInPrompt } from 'components/login/SignInPrompt';
+
+import NavBar from 'components/navbar/Navbar';
+
+import Home from "components/pages/home/Home";
+import Discover from "components/pages/discover/Discover";
+
+import TransactionResult from "components/misc/TransactionResult";
+
+
+export default function App() {
+    return EneftigoContextAware(AppContent);
 }
 
-export default App;
+const themeEneftigoDefault = createTheme({
+    components: {
+        // Name of the component
+        MuiCard: {
+            styleOverrides: {
+                root: {
+                    // backgroundColor: 'var(--eneftigo-black)',
+                    color: 'var(--eneftigo-black)'
+                },
+            },
+        },
+        // MuiPaper: {
+
+        MuiStepIcon: {
+            styleOverrides: {
+                root: {
+                    color: 'grey',
+                    "&.Mui-active": {
+                        color: 'var(--eneftigo-red)',
+                    },
+                    "&.Mui-completed": {
+                        color: 'var(--eneftigo-green)',
+                    },
+                },
+            }
+        },
+        MuiStepLabel: {
+            styleOverrides: {
+                label: {
+                    font: 'var(--eneftigo-text-font-family)',
+                    fontSize: '12px',
+                    "&.MuiStepLabel-alternativeLabel": {
+                        marginTop: '4px',
+                    },
+                },
+            },
+        },
+        MuiButtonBase: {
+            styleOverrides: {
+                root: {
+                    font: 'var(--eneftigo-text-font-family)',
+                    fontSize: '12px',
+                    "&.Mui-selected": {
+                        font: 'var(--eneftigo-text-font-family)',
+                        fontSize: '12px',
+                        // color: 'var(--eneftigo-red)',
+                    },
+                },
+            }
+        },
+        MuiMenuItem: {
+            styleOverrides: {
+                root: {
+                    font: 'var(--eneftigo-text-font-family)',
+                    fontSize: '12px',
+                    "&.Mui-selected": {
+                        font: 'var(--eneftigo-text-font-family)',
+                        fontSize: '12px',
+                    },
+                },
+            }
+        },
+        MuiBox: {
+            styleOverrides: {
+                root: {
+                    backgroundColor: 'var(--bg)',
+                    font: 'var(--eneftigo-text-font-family)',
+                    fontSize: '36px',
+                    color: 'var(--fg)',
+                },
+            }
+        },
+    }
+});
+
+
+function AppContent() {
+    const { loading, account, modal } = useContext(EneftigoContext);
+    if (loading) {
+        return (
+            <>
+                <div><PuffLoader color="#DD3333" style={{ position: "absolute", top: "35%", left: "45%" }} /></div>
+            </>
+        );
+    }
+
+    // show modal prompt if not signed-in
+    if (!account) {
+        return (
+            <>
+                <SignInPrompt onClick={() => modal.show()} />
+            </>
+        );
+    }
+
+    return (
+        <>
+            <ThemeProvider theme={themeEneftigoDefault}>
+                <NavBar />
+                <div className="container">
+                    <Toaster
+                        containerStyle={{
+                            top: 64,
+                            left: 20,
+                            bottom: 20,
+                            right: 20,
+                        }}
+                        position="top-right" />
+                    <Routes>
+                        <Route path="/" element={<Home />} />
+                        <Route path="/home" element={<Home />} />
+                        <Route path="/discover" element={<Discover />} />
+                    </Routes>
+                    <TransactionResult />
+                </div>
+            </ThemeProvider>
+        </>
+    );
+}

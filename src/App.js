@@ -97,7 +97,51 @@ const themeEneftigoDefault = createTheme({
                 },
             }
         },
-    }
+        MuiTextField: {
+            styleOverrides: {
+                root: {
+                    margin: '0px',
+                    padding: '0px',
+                    textAlign: "right",
+                },
+            }
+        },
+        MuiInputBase: {
+            styleOverrides: {
+                root: {
+                    borderRadius: '3px',
+                    margin: '0px',
+                    padding: '0px',
+                    color: 'var(--eneftigo-white)',
+                    fontFamily: 'var(--eneftigo-mono-font-family)',
+                    textAlign: "right",
+                },
+                input: {
+                    margin: '0px',
+                    padding: '0px',
+                    color: 'var(--eneftigo-white)',
+                    fontFamily: 'var(--eneftigo-mono-font-family)',
+                    textAlign: "right",
+                },            
+            }
+        },
+        MuiOutlinedInput: {
+            styleOverrides: {
+                input: {
+                    borderRadius: '3px',
+                    margin: 'auto',
+                    padding: '0px',
+                    color: 'var(--eneftigo-white)',
+                    fontFamily: 'var(--eneftigo-mono-font-family)',
+                    fontSize: "17px",
+                    textAlign: "right",
+                },
+                notchedOutline: {
+                    outline: "none",
+                }
+            }
+        }
+    },
 });
 
 

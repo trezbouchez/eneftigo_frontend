@@ -44,15 +44,15 @@ const steps = [
     'Timing',
 ];
 
+
 const theme = createTheme({
     components: {
-        // Name of the component
         MuiStepIcon: {
             styleOverrides: {
                 root: {
                     color: 'grey',
                     "&.Mui-active": {
-                        color: 'var(--eneftigo-red)',
+                        color: 'var(--eneftigo-blue)',
                     },
                     "&.Mui-completed": {
                         color: 'var(--eneftigo-green)',
@@ -64,10 +64,33 @@ const theme = createTheme({
             styleOverrides: {
                 label: {
                     font: 'var(--eneftigo-text-font-family)',
+                    color: 'var(--eneftigo-white)',
                     fontSize: '12px',
                     "&.MuiStepLabel-alternativeLabel": {
+                        color: 'var(--eneftigo-white)',
                         marginTop: '4px',
                     },
+                    "&.Mui-completed": {
+                        color: 'var(--eneftigo-green)',
+                    },
+                    "&.Mui-active": {
+                        color: 'var(--eneftigo-blue)',
+                    },
+                },
+            },
+        },
+        MuiOutlinedInput: {
+            styleOverrides: {
+
+                input: {
+                    borderRadius: '5px',
+                    margin: 'auto',
+                    padding: '2px',
+                    color: 'var(--eneftigo-white)',
+                    backgroundColor: 'var(--eneftigo-very-dark-grey)',
+                    fontSize: "17px",
+                    textAlign: "center",
+                    borderColor: 'var(--eneftigo-grey)',
                 },
             },
         }
@@ -97,8 +120,8 @@ export default function CreateAuctionListing() {
     const handleSubmit = ({ title, mediaUrl, quantity, minBidNear, startOption, durationOption }) => {
         let startDate;
         switch (startOption) {
-            case 0: startDate = null;                                           break;  // now
-            case 1: startDate = new Date(Date.now() + 1 *  1 * 60 * 60 * 1000); break;  // in 1 hour
+            case 0: startDate = null; break;  // now
+            case 1: startDate = new Date(Date.now() + 1 * 1 * 60 * 60 * 1000); break;  // in 1 hour
             case 2: startDate = new Date(Date.now() + 1 * 24 * 60 * 60 * 1000); break;  // in 1 day
             case 3: startDate = new Date(Date.now() + 3 * 24 * 60 * 60 * 1000); break;  // in 3 days
             case 4: startDate = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000); break;  // in 1 week
@@ -106,11 +129,11 @@ export default function CreateAuctionListing() {
         let endTime;
         let startTime = startDate?.getTime() ?? Date.now();
         switch (durationOption) {
-            case 0: endTime = startTime +  1 * 24 * 60 * 60 * 1000;             break;  // 1 day
-            case 1: endTime = startTime +  3 * 24 * 60 * 60 * 1000;             break;  // 3 days
-            case 2: endTime = startTime +  7 * 24 * 60 * 60 * 1000;             break;  // 1 week
-            case 3: endTime = startTime + 14 * 24 * 60 * 60 * 1000;             break;  // 2 weeks
-            case 4: endTime = startTime + 30 * 24 * 60 * 60 * 1000;             break;  // 1 month (30 days)
+            case 0: endTime = startTime + 1 * 24 * 60 * 60 * 1000; break;  // 1 day
+            case 1: endTime = startTime + 3 * 24 * 60 * 60 * 1000; break;  // 3 days
+            case 2: endTime = startTime + 7 * 24 * 60 * 60 * 1000; break;  // 1 week
+            case 3: endTime = startTime + 14 * 24 * 60 * 60 * 1000; break;  // 2 weeks
+            case 4: endTime = startTime + 30 * 24 * 60 * 60 * 1000; break;  // 1 month (30 days)
         }
         const endDate = new Date(endTime);
         const promiseChain = submitListing({
@@ -124,8 +147,8 @@ export default function CreateAuctionListing() {
             startDate: startDate,
             endDate: endDate,
         }).then(({ collectionId, updatedDeposit }) => {
-            console.log(collectionId);
-            console.log(updatedDeposit);
+            // console.log(collectionId);
+            // console.log(updatedDeposit);
         }).then(async () => {
             try {
                 return await Promise.all([
@@ -140,7 +163,7 @@ export default function CreateAuctionListing() {
                         selector: selector,
                         accountId: account.account_id,
                     }).then((updatedAccountData) => {
-                        console.log("updated balance " + updatedAccountData.amount);
+                        // console.log("updated balance " + updatedAccountData.amount);
                         const updatedAccount = {
                             account_id: account.account_id,
                             ...updatedAccountData,
@@ -149,7 +172,7 @@ export default function CreateAuctionListing() {
                     })
                 ]);
             } catch (error) {
-                return console.log(error);
+                console.log(error);
                 // the listing has been added nevertheless so we don't propagate (and display) the error
             }
         });
@@ -183,14 +206,14 @@ export default function CreateAuctionListing() {
                         </Step>
                     ))}
                 </Stepper>
+                <CreatePage
+                    step={step}
+                    onPrev={() => setStep(step - 1)}
+                    onNext={() => setStep(step + 1)}
+                    onSubmit={handleSubmit}
+                    style={{ marginBlockStart: "24px" }}
+                />
             </ThemeProvider>
-            <CreatePage
-                step={step}
-                onPrev={() => setStep(step - 1)}
-                onNext={() => setStep(step + 1)}
-                onSubmit={handleSubmit}
-                style={{ marginBlockStart: "24px" }}
-            />
         </div>
     );
 }
@@ -438,8 +461,8 @@ function Pricing({ minBid, onMinBidChange, onPrev, onNext }) {
             <p>
                 <button style={{ position: "absolute", left: "64px", bottom: "24px" }} onClick={onPrev}>PREV</button>
                 {minBidError === null && minBid > 0 ?
-                    <button style={{ position: "absolute", right: "64px", bottom: "24px" }} onClick={onNext}>PREVIEW</button> :
-                    <button disabled style={{ position: "absolute", right: "64px", bottom: "24px" }} onClick={onNext}>PREVIEW</button>
+                    <button style={{ position: "absolute", right: "64px", bottom: "24px" }} onClick={onNext}>NEXT</button> :
+                    <button disabled style={{ position: "absolute", right: "64px", bottom: "24px" }} onClick={onNext}>NEXT</button>
                 }
             </p>
         </>
@@ -555,9 +578,9 @@ function TitleInput({ title, error, onChange }) {
         return (
             <>
                 <TextField
+                    // className={this.props.}
                     error
                     required
-                    label="Title"
                     helperText={error}
                     onChange={(e) => onChange(e.target.value)}
                     defaultValue={title}
@@ -570,10 +593,11 @@ function TitleInput({ title, error, onChange }) {
             <>
                 <TextField
                     required
-                    label="Title"
                     onChange={(e) => onChange(e.target.value)}
                     defaultValue={title}
+                    placeholder="auction title"
                     autoComplete="off"
+                    sx={{ borderColor: "white", textAlign: "center" }}
                 />
             </>
         );

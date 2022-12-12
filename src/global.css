@@ -4,21 +4,19 @@
 
 html {
   --eneftigo-text-font-family: "Montserrat", sans-serif;
-  --eneftigo-widget-font-family: "Jura", sans-serif;
   --eneftigo-header-font-family: "Jura", sans-serif;
+  --eneftigo-mono-font-family: "Syne Mono", monospace;
 
   --eneftigo-black: #111111;
-  --eneftigo-very-dark-grey: #222222;
+  --eneftigo-very-dark-grey: #202020;
   --eneftigo-dark-grey: #262626;
   --eneftigo-white: #FFFFFF;
-  --eneftigo-red: #DD3333;
+  --eneftigo-red: #DF001A;
   --eneftigo-yellow: #DDAA33;
   --eneftigo-green: rgb(80, 190, 112);
   --eneftigo-grey: grey;
-  --eneftigo-blue: #2793c1;
-  --eneftigo-light-blue: #dfe3e6;
-  --eneftigo-lighter-blue: #f8fbfb;
-
+  --eneftigo-blue: #3499c4;
+  
   --eneftigo-font-size-small: calc(11px);
 
   --gray: #555;
@@ -30,6 +28,10 @@ html {
   --cancel: #5555AA;
 
   background-color: var(--eneftigo-black);
+  background-image: url(assets/background.png);
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-attachment: fixed;
   color: var(--eneftigo-white);
   font-family: "Montserrat", sans-serif;
   font-size: 16px;
@@ -153,7 +155,7 @@ a:active,
 
 button,
 input {
-  font-family: "Jura", sans-serif;
+  font-family: var(--eneftigo-mono-font-family);
   font-size: calc(0.5em + 0.5vw);
   outline: none;
 }
@@ -174,7 +176,7 @@ button {
   border-width: 1px;
   border-style: solid;
   border-color: var(--eneftigo-black);
-  color: #efefef;
+  color: var(--eneftigo-black);
   cursor: pointer;
   /* padding: 0.3em 0.75em; */
   transition: transform 30ms;
@@ -350,7 +352,7 @@ main.please-wait .loader:after {
 } */
 
 .nav li:hover {
-  background-color:var(--eneftigo-very-dark-grey);
+  background-color: var(--eneftigo-very-dark-grey);
   /* border-bottom: 0; */
 }
 
@@ -362,6 +364,7 @@ main.please-wait .loader:after {
   margin-block-start: "0px";
   margin-block: "0px";
   margin: "0px";
+  color: var(--eneftigo-black);
 }
 
 /* Listing card content */
@@ -401,6 +404,8 @@ main.please-wait .loader:after {
 
 .listing_card {
   color: white;
+  background-color: var(--eneftigo-dark-grey);
+  border-radius: 3;
 }
 
 .listing_card p {
@@ -413,17 +418,20 @@ main.please-wait .loader:after {
 #listing_title_thumb {
   font-size: 14px;
   inset: 1px;
-  padding-bottom: 6px;
+  padding-bottom: 2px;
   margin-block-start: 0;
   margin-block-end: 0;
 }
 
 .nft_card {
-  background-color: white;
+  color: white;
+  background-color: var(--eneftigo-dark-grey);
+  border-radius: 3;
 }
 
 .nft_card p {
   font-size: 12px;
+  color: white;
   margin-block-start: 0.4em;
   margin-block-end: 0.4em;
 }
@@ -465,7 +473,7 @@ main.please-wait .loader:after {
   color: white;
   border-radius: 4px;
   text-shadow: 0 1px 1px rgba(0, 0, 0, 0.2);
-  background: var(--eneftigo-light-blue);
+  background: var(--eneftigo-blue);
 }
 
 .action-button-destructive {

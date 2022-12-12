@@ -3,7 +3,6 @@ import { useState } from "react";
 import { Link, useMatch, useResolvedPath } from "react-router-dom";
 import { SignOutButton } from 'components/login/SignInPrompt';
 import eneftigo_logo from 'assets/eneftigo_logo.png';
-import eneftigo_name from 'assets/eneftigo_name.png';
 import { useEneftigoContext } from "EneftigoContext";
 import { Balance } from "components/misc/balance/Balance";
 import { NavbarAccount } from "components/navbar/NavbarAccount";
@@ -24,11 +23,11 @@ export default function Navbar() {
     };
 
     return (
-        <nav className="nav">
+        <nav className="nav" style={{ height: "64px", padding: "0px" }}>
             <ul>
-                <Link to="/home" className="site-title">
+                <Link to="/home" className="site-title" style={{ padding: "0px" }}>
+                    <img src={require('assets/bracket_left.png')} alt="[" height="100%" style={{ margin: "0px 10px 0px 0px" }} />
                     <img src={eneftigo_logo} height="40" alt="" />
-                    <img src={eneftigo_name} height="30" alt="ENEFTIGO" />
                 </Link>
                 <CustomLink className="page_link" to="/home">HOME</CustomLink>
                 <CustomLink className="page_link" to="/discover">DISCOVER</CustomLink>
@@ -43,6 +42,7 @@ export default function Navbar() {
                 />
                 <NavbarAccount />
                 <SignOutButton accountId={account.account_id} onClick={handleSignOut} />
+                <img src={require('assets/bracket_right.png')} alt="[" height="100%" style={{ margin: "0px 0px 0px 0px" }} />
             </ul>
         </nav>
     )

@@ -26,7 +26,7 @@ export function SignInPrompt({onClick}) {
 
 export function SignOutButton({onClick}) {
   return (
-    <button style={{ height: '32px', float: 'right' }} onClick={onClick}>
+    <button style={{ color:"var(--eneftigo-black)", backgroundColor:"var(--eneftigo-red)", margin: "auto", height: '32px', float: 'right' }} onClick={onClick}>
       SIGN OUT
     </button>
   );

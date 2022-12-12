@@ -56,7 +56,10 @@ export function EneftigoContextAware(Content) {
                 }),
             ],
         });
-        const _modal = setupModal(_selector, { contractId: CONTRACT_ID });
+        const _modal = setupModal(_selector, { 
+            contractId: CONTRACT_ID,
+            theme: "dark"
+        });
         const state = _selector.store.getState();
         const _accounts = state.accounts;
 

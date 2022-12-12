@@ -21,13 +21,12 @@ const steps = [
 
 const theme = createTheme({
     components: {
-        // Name of the component
         MuiStepIcon: {
             styleOverrides: {
                 root: {
                     color: 'grey',
                     "&.Mui-active": {
-                        color: 'var(--eneftigo-red)',
+                        color: 'var(--eneftigo-blue)',
                     },
                     "&.Mui-completed": {
                         color: 'var(--eneftigo-green)',
@@ -39,9 +38,17 @@ const theme = createTheme({
             styleOverrides: {
                 label: {
                     font: 'var(--eneftigo-text-font-family)',
+                    color: 'var(--eneftigo-white)',
                     fontSize: '12px',
                     "&.MuiStepLabel-alternativeLabel": {
+                        color: 'var(--eneftigo-white)',
                         marginTop: '4px',
+                    },
+                    "&.Mui-completed": {
+                        color: 'var(--eneftigo-green)',
+                    },
+                    "&.Mui-active": {
+                        color: 'var(--eneftigo-blue)',
                     },
                 },
             },
@@ -79,8 +86,8 @@ export default function CreateFixedPriceListing() {
             quantity: quantity,
             priceNear: price,
         }).then(({ collectionId, updatedDeposit }) => {
-            console.log(collectionId);
-            console.log(updatedDeposit);
+            // console.log(collectionId);
+            // console.log(updatedDeposit);
         }).then(async () => {
             try {
                 return await Promise.all([
@@ -95,7 +102,7 @@ export default function CreateFixedPriceListing() {
                         selector: selector,
                         accountId: account.account_id,
                     }).then((updatedAccountData) => {
-                        console.log("updated balance " + updatedAccountData.amount);
+                        // console.log("updated balance " + updatedAccountData.amount);
                         const updatedAccount = {
                             account_id: account.account_id,
                             ...updatedAccountData,
@@ -104,17 +111,17 @@ export default function CreateFixedPriceListing() {
                     })
                 ]);
             } catch (error) {
-                return console.log(error);
+                console.log(error);
                 // the listing has been added nevertheless so we don't propagate (and display) the error
-            }      
+            }
         });
 
         toast.promise(
             promiseChain,
             {
                 loading: 'Adding NFT listing...',
-                success: <p style={{margin: '0px'}}>NFT listing created!</p>,
-                error: (error) => <p style={{margin: '0px'}}>Could not create NFT listing<br /><span style={{fontSize: 'var(--eneftigo-font-size-small)'}}>{error.message}</span></p>,
+                success: <p style={{ margin: '0px' }}>NFT listing created!</p>,
+                error: (error) => <p style={{ margin: '0px' }}>Could not create NFT listing<br /><span style={{ fontSize: 'var(--eneftigo-font-size-small)' }}>{error.message}</span></p>,
             },
             {
                 style: {
@@ -130,16 +137,14 @@ export default function CreateFixedPriceListing() {
 
     return (
         <>
-            <div style={{ textAlign:"center", position: "relative", marginLeft: "auto", marginRight: "auto", borderRadius: 3, p: 1, height: "450px", width: "600px" }}>
-                <ThemeProvider theme={theme}>
-                    <Stepper activeStep={step} alternativeLabel>
-                        {steps.map((label) => (
-                            <Step key={label}>
-                                <StepLabel>{label}</StepLabel>
-                            </Step>
-                        ))}
-                    </Stepper>
-                </ThemeProvider>
+            <div style={{ textAlign: "center", position: "relative", marginLeft: "auto", marginRight: "auto", borderRadius: 3, p: 1, height: "450px", width: "600px" }}>
+                <Stepper activeStep={step} alternativeLabel>
+                    {steps.map((label) => (
+                        <Step key={label}>
+                            <StepLabel>{label}</StepLabel>
+                        </Step>
+                    ))}
+                </Stepper>
                 <CreatePage
                     step={step}
                     onPrev={() => setStep(step - 1)}

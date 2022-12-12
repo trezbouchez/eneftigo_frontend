@@ -108,7 +108,6 @@ function ModalHeader({ title, handleHelp, handleClose }) {
             />
             <p style={{
                 margin: "auto",
-                color: "var(--eneftigo-white)",
                 fontFamily: "var(--eneftigo-header-font-family)",
                 fontSize: "17px"
             }}>{title}</p>

@@ -5,25 +5,27 @@ import { NewListingDetails } from './NewListingDetails'
 export function NewListingCard({ showDetails, handleShowDetails, handleHideDetails }) {
 
     return (
-        <div>
+        <div
+            className="new_listing_card"
+            style={{ display: "flex", alignItems: "center", borderStyle: "dashed", borderColor: "var(--eneftigo-grey", borderRadius: "12px", height: "320px", width: "200px" }}>
             <div
-                className="new_listing_card"
-                style={{ position: "relative", height: "200px", width: "200px" }}
+                margin="auto"
+                style={{ margin: "auto" }}
             >
                 <img
                     onClick={handleShowDetails}
-                    width="80%"
+                    width="60%"
                     src={require('assets/plus_icon_white.png')}
                     alt="+"
                 />
-                <p>ADD LISTING</p>
+                <p style={{ margin: "20px 0px 0px 0px", fontSize: "14px" }}>ADD LISTING</p>
             </div>
             <EneftigoModal
-                sx={{ margin: "0px" }}
                 open={showDetails}
                 title="LISTING DETAILS"
                 handleClose={handleHideDetails}
-                content={<NewListingDetails />}
+                disableAutoFocus={true}
+                content={<NewListingDetails handleClose={handleHideDetails} />}
             />
         </div>
     );

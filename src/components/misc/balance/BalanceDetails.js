@@ -64,21 +64,29 @@ function BalanceDetailsContent({ handleAddDeposit, handleWithdrawDeposit }) {
     const { account, deposit } = useEneftigoContext();
 
     let balanceColor;
+    let balanceIcon;
     if (account.amount < BALANCE_MIN_YOCTO) {
         balanceColor = "var(--eneftigo-red)";
+        balanceIcon = require("assets/near_icon_red.png");
     } else if (account.amount < BALANCE_LOW_YOCTO) {
         balanceColor = "var(--eneftigo-yellow)";
+        balanceIcon = require("assets/near_icon_yellow.png");
     } else {
         balanceColor = "var(--eneftigo-green)";
+        balanceIcon = require("assets/near_icon_green.png");
     }
 
     let depositColor;
+    let depositIcon;
     if (deposit[0] < DEPOSIT_MIN_YOCTO) {
         depositColor = "var(--eneftigo-red)";
+        depositIcon = require("assets/near_icon_red.png");
     } else if (deposit[0] < DEPOSIT_LOW_YOCTO) {
         depositColor = "var(--eneftigo-yellow)";
+        depositIcon = require("assets/near_icon_yellow.png");
     } else {
         depositColor = "var(--eneftigo-green)";
+        depositIcon = require("assets/near_icon_green.png");
     }
 
     return (
@@ -87,10 +95,10 @@ function BalanceDetailsContent({ handleAddDeposit, handleWithdrawDeposit }) {
                 Wallet Balance:
             </p>
             <div className="flex-container" style={{ marginBlockStart: "0" }}>
-                <h2 style={{ color: balanceColor }}>
+                <h2 style={{ fontFamily: "var(--eneftigo-mono-font-family", color: balanceColor }}>
                     {yocto_to_near(BigInt(account.amount)).toFixed(2)}
                 </h2>
-                <img src={near_icon} width="36" height="36" alt="N" />
+                <img src={balanceIcon} width="36" height="36" alt="N" />
             </div>
             <div style={{ textAlign: 'center', fontSize: 'var(--eneftigo-font-size-small)' }}>
                 {
@@ -123,10 +131,10 @@ function BalanceDetailsContent({ handleAddDeposit, handleWithdrawDeposit }) {
                 Storage Deposit:
             </p>
             <div className="flex-container">
-                <h2 style={{ color: depositColor }}>
+                <h2 style={{ fontFamily: "var(--eneftigo-mono-font-family", color: depositColor }}>
                     {((yocto_to_near(deposit[0])) * 1).toFixed(2)}
                 </h2>
-                <img src={near_icon} width="36" height="36" alt="N" />
+                <img src={depositIcon} width="36" height="36" alt="N" />
             </div>
             <div style={{ textAlign: 'center', fontSize: 'var(--eneftigo-font-size-small)' }}>
                 {

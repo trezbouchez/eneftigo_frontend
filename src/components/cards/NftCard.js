@@ -29,15 +29,25 @@ export default function NftCard({ nft }) {
     const [listed, setListed] = useState(undefined);
 
     isListed({ selector, contractId, nftContractId: nft.contract_id, tokenId: nft.token_id })
-    .then((l) => {
-        console.log(l);
-        setListed(l);
-    });
+        .then((l) => {
+            setListed(l);
+        });
 
     return (
         <>
-            <Card className="nft_card" variant="elevation" sx={{ borderRadius: 3, p: 1, height: 300, width: 200 }}>
-                <p id="listing_title_thumb">{nft.metadata.title}</p>
+            <Card
+                className="nft_card"
+                variant="elevation"
+                sx={{
+                    backgroundColor: "var(--eneftigo-dark-grey)",
+                    borderRadius: 3,
+                    borderRadius: 3,
+                    p: 1,
+                    height: 300,
+                    width: 200
+                }}
+            >
+                <p id="listing_title_thumb" style={{marginBottom:"12px"}}>{nft.metadata.title}</p>
                 <CardMedia
                     style={{ borderRadius: "4px" }}
                     component="img"

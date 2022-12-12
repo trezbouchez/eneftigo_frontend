@@ -43,7 +43,6 @@ function BidDetailsContent({ listing, bidAmount }) {
     const { selector, contractId, account } = useEneftigoContext();
 
     const bidAmountYocto = (BigInt(parseInt(bidAmount)) * 10n ** 24n).toString();
-    console.log(bidAmountYocto);
 
     const handlePlaceBid = async () => {
         try {
@@ -79,7 +78,7 @@ function BidDetailsContent({ listing, bidAmount }) {
                 You are just about to place a bid.
             </p>
             <p style={{ textAlign: 'center' }} id="buy-modal-description">
-                You will be redirected to your wallet to authorize the payment of {bidAmount} NEAR<br />plus gas costs
+                You will be redirected to your wallet to authorize the payment of <span style={{fontSize: "18px", fontFamily:"var(--eneftigo-mono-font-family)"}}>{bidAmount}</span> NEAR<br />plus gas costs
             </p>
             <p style={{ textAlign: 'center' }} id="buy-modal-description">
                 Are you sure you want to continue?

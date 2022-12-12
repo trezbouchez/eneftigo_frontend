@@ -29,8 +29,8 @@ export function NavbarAccount() {
     }
 
     return (
-        <div>
-            <p onClick={handleClick}>{account.account_id}</p>
+        <div style={{margin:"auto"}}>
+            <p onClick={handleClick} style={{margin:"0"}}>{account.account_id}</p>
             {/* <Button aria-controls="simple-menu" aria-haspopup="true" onClick={handleClick}>
                 {account.account_id}
             </Button> */}

@@ -112,8 +112,8 @@ function SecondaryListingWorkflow({ nft, open, handleClose }) {
             title: title,
             priceNear: price,
         }).then(({ collectionId, updatedDeposit }) => {
-            console.log(collectionId);
-            console.log(updatedDeposit);
+            // console.log(collectionId);
+            // console.log(updatedDeposit);
         }).then(async () => {
             try {
                 return await Promise.all([
@@ -128,7 +128,7 @@ function SecondaryListingWorkflow({ nft, open, handleClose }) {
                         selector: selector,
                         accountId: account.account_id,
                     }).then((updatedAccountData) => {
-                        console.log("updated balance " + updatedAccountData.amount);
+                        // console.log("updated balance " + updatedAccountData.amount);
                         const updatedAccount = {
                             account_id: account.account_id,
                             ...updatedAccountData,
@@ -137,7 +137,7 @@ function SecondaryListingWorkflow({ nft, open, handleClose }) {
                     })
                 ]);
             } catch (error) {
-                return console.log(error);
+                console.log(error);
                 // the listing has been added nevertheless so we don't propagate (and display) the error
             }
         });

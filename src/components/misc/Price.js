@@ -7,8 +7,8 @@ export function PriceLabel({ price_yocto }) {
         <>
             <div className="price" style={{ margin: "auto" }}>
                 <div style={{ display: "flex", justifyContent: "center", alignItems: "center" }}>
-                    <p>{priceNear}</p>
-                    <img style={{ margin: "-2px -1px 0px -2px" }} src={near_icon} width="26" height="26" alt="N" />
+                    <p style={{ fontFamily:"var(--eneftigo-mono-font-family)"}}>{priceNear}</p>
+                    <img style={{ margin: "-2px -1px -1px -2px" }} src={near_icon} width="26" height="26" alt="N" />
                 </div>
             </div>
         </>

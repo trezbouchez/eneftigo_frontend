@@ -3,10 +3,9 @@
   "name": "ENEFITGO - Your place for trading music NFTs",
   "icons": [
     {
-      "src": "favicon.ico",
-      "sizes": "64x64 32x32 24x24 16x16",
-      "type": "image/x-icon"
-    },
+      "src": "eneftigo.ico",
+      "sizes": "64x64 32x32 24x24 16x16"
+    }
   ],
   "start_url": ".",
   "display": "standalone",

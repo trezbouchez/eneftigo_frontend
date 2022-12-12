@@ -242,9 +242,6 @@ export async function bidPrimaryListing({
   walletMeta = "primary_listing_bid",
   walletCallbackUrl = window.location.protocol + '//' + window.location.host + window.location.pathname
 }) {
-  console.log("BIDDONG");
-  console.log(bidAmountYocto.toString());
-
   const result = await callMethodAndGetResult({
     selector: selector,
     contractId: contractId,

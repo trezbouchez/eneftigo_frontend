@@ -25,7 +25,7 @@ export function Bid({ listing, bidAmount }) {
     };
 
     return (
-        <>
+        <div>
             <button style={{ width: "60px" }} className="listing_buy_thumb" onClick={handleOpen}>
                 BID
             </button>
@@ -39,6 +39,6 @@ export function Bid({ listing, bidAmount }) {
                 open={modal === Modal.INSUFFICIENT_DEPOSIT}
                 handleClose={() => setModal(null)}
             />
-        </>
+        </div>
     );
 }

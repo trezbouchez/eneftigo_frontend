@@ -5,11 +5,17 @@ import { ListingCard } from 'components/cards/ListingCard';
 import { MyListingCard } from 'components/cards/MyListingCard';
 import { useEneftigoContext, useWalletSelectorContext } from 'EneftigoContext';
 import { getPrimaryListings, getSecondaryListings } from 'nearInterface';
+import { SectionHeader } from 'components/misc/SectionHeader';
+
+const SHOW_FIRST_ITEMS_COUNT = 5;
 
 export default function Discover() {
     const [busy, setBusy] = React.useState(true);
-    const [listings, setListings] = React.useState([]);
+    const [primaryListings, setPrimaryListings] = React.useState([]);
+    const [secondaryListings, setSecondaryListings] = React.useState([]);
     const [focusedItem, setFocusedItem] = React.useState(null);
+    const [showMorePrimary, setShowMorePrimary] = React.useState(false);
+    const [showMoreSecondary, setShowMoreSecondary] = React.useState(false);
 
     const { contractId, selector, account } = useEneftigoContext();
 
@@ -21,15 +27,14 @@ export default function Discover() {
             getSecondaryListings({ selector, contractId })
         ])
             .then((values) => {
-                const primaryListings = values[0].map((listing) => {
+                setPrimaryListings(values[0].map((listing) => {
                     listing.is_secondary = false;
                     return listing;
-                });
-                const secondaryListings = values[1].map((listing) => {
+                }));
+                setSecondaryListings(values[1].map((listing) => {
                     listing.is_secondary = true;
                     return listing;
-                });
-                setListings(primaryListings.concat(secondaryListings));
+                }));
             })
             .catch(alert)
             .finally(() => {
@@ -37,10 +42,29 @@ export default function Discover() {
             });
     }, []);
 
+    const handleMorePrimary = () => {
+        setShowMorePrimary((oldValue) => !oldValue);
+    };
+
+    const handleMoreSecondary = () => {
+        setShowMoreSecondary((oldValue) => !oldValue);
+    };
+
+    const shownPrimary = showMorePrimary ? primaryListings : primaryListings.slice(0, Math.min(SHOW_FIRST_ITEMS_COUNT, primaryListings.length));
+    const shownSecondary = showMoreSecondary ? secondaryListings : secondaryListings.slice(0, Math.min(SHOW_FIRST_ITEMS_COUNT, secondaryListings.length));
+
+
     return (
         <Grid style={{ padding: '10px', maxHeight: '90vh', overflow: 'auto' }} container justifyContent="center" spacing={5}>
+            <Grid key="primary_header" item xs={12} sm={12}>
+                <SectionHeader
+                    title="NEW ITEMS"
+                    showingMore={showMorePrimary}
+                    onMoreButton={primaryListings.length > SHOW_FIRST_ITEMS_COUNT ? handleMorePrimary : null}
+                />
+            </Grid>
             {
-                listings.map((listing) => {
+                shownPrimary.map((listing) => {
                     const key = listing.nft_contract_id + ":" + listing.collection_id;
                     return (
                         <Grid key={key} item>
@@ -61,6 +85,52 @@ export default function Discover() {
                         </Grid>
                     );
                 })
+            }
+            {
+                primaryListings.length == 0 &&
+                <Grid key="primary_desc" item >
+                    <p style={{ width: "200px", fontSize: "12px", color: "var(--eneftigo-grey)", margin: "auto" }}>
+                        There are no new items currently on sale.
+                    </p>
+                </Grid>
+            }
+            <Grid key="secondary_header" item xs={12} sm={12}>
+                <SectionHeader
+                    title="PRE-OWNED ITEMS"
+                    showingMore={showMoreSecondary}
+                    onMoreButton={secondaryListings.length > SHOW_FIRST_ITEMS_COUNT ? handleMoreSecondary : null}
+                />
+            </Grid>
+            {
+                shownSecondary.map((listing) => {
+                    const key = listing.nft_contract_id + ":" + listing.collection_id;
+                    return (
+                        <Grid key={key} item>
+                            {listing.seller_id == account.account_id ?
+                                <MyListingCard
+                                    listing={listing}
+                                    showDetails={key === focusedItem}
+                                    handleShowDetails={() => setFocusedItem(key)}
+                                    handleHideDetails={() => setFocusedItem(null)}
+                                /> :
+                                <ListingCard
+                                    listing={listing}
+                                    showDetails={key === focusedItem}
+                                    handleShowDetails={() => setFocusedItem(key)}
+                                    handleHideDetails={() => setFocusedItem(null)}
+                                />
+                            }
+                        </Grid>
+                    );
+                })
+            }
+            {
+                secondaryListings.length == 0 &&
+                <Grid key="secondary_desc" item >
+                    <p style={{ width: "200px", fontSize: "12px", color: "var(--eneftigo-grey)", margin: "auto" }}>
+                        There are no pre-owned items currently on sale.
+                    </p>
+                </Grid>
             }
         </Grid>
     );

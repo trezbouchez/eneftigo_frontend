@@ -35,7 +35,7 @@ export function MyListingCard({ listing, showDetails, handleShowDetails, handleH
                     backgroundColor: "var(--eneftigo-dark-grey)",
                     borderRadius: 3,
                     p: 1,
-                    height: 360,
+                    height: 320,
                     width: 200,
                 }}>
                 {listing.is_secondary &&
@@ -46,7 +46,7 @@ export function MyListingCard({ listing, showDetails, handleShowDetails, handleH
                     <img style={{ position: "absolute", top: "5px", right: "8px" }} src={auction} width="24" height="24" alt="N" />
                 }
                 <p id="listing_title_thumb">{listing.nft_metadata.title}</p>
-                <p> by {listing.seller_id}</p>
+                <p style={{fontFamily: "var(--eneftigo-header-font-family)"}}>{listing.seller_id} (you)</p>
                 <CardMedia
                     onClick={handleShowDetails}
                     style={{ borderRadius: "4px" }}
@@ -55,28 +55,29 @@ export function MyListingCard({ listing, showDetails, handleShowDetails, handleH
                     image={listing.nft_metadata.media}
                     alt="Media"
                 />
+                <p style={{fontSize: "10px"}}>
                 {
                     listing.is_secondary ?
-                        <p>SELLING BY: TODO</p> :
-                        <p>OFFERED: {listing.supply_total}, AVAILABLE: {listing.supply_left}</p>
+                        "SELLING BY: TODO" :
+                        "AVAILABLE: " + listing.supply_left
                 }
+                </p>                
                 {
                     listing.price_yocto &&
                     <div style={{ marginLeft: "16px", marginRight: "16px", display: "flex", justifyContent: "space-between", alignItems: "center", gap: "18px" }}>
-                        <p>BUY-NOW PRICE:</p>
+                        <p>PRICE:</p>
                         <PriceLabel price_yocto={listing.price_yocto} />
                     </div>
                 }
                 {
                     listing.min_bid_yocto &&
                     <div style={{ marginLeft: "16px", marginRight: "16px", display: "flex", justifyContent: "space-between", alignItems: "center", gap: "18px" }}>
-                        <p>CURRENT PRICE:</p>
+                        <p>MIN BID:</p>
                         <PriceLabel price_yocto={listing.acceptable_bid_yocto} />
                     </div>
                 }
             </Card>
             <EneftigoModal
-            sx={{margin:"0px"}}
                 open={showDetails}
                 title="LISTING DETAILS"
                 handleClose={handleHideDetails}

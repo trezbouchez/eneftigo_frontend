@@ -115,7 +115,6 @@ function EndSecondaryListingModal({ nft, open, handleClose }) {
 
     const content =
         <div style={{ margin: "16px 32px 32px 32px" }}>
-
             <Box sx={{ position: "relative", marginLeft: "auto", marginRight: "auto", borderRadius: 3, p: 1, height: "200px", width: "400px" }}>
                 <p style={{ textAlign: 'center' }} id="buy-modal-description">
                     You are just about to remove the NFT listing.

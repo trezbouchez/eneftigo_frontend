@@ -18,6 +18,10 @@ export function ListingDetails({ listing }) {
         <div position="relative" style={{ position: "relative", width: "500px", height: "500px" }}>
             <img style={{ position: "absolute", width: "500px", height: "500px", opacity: "0.15" }} src={listing.nft_metadata.media} />
             <div style={{ position: "absolute", width: "480px", height: "480px", margin: "10px" }}>
+                {
+                    listing.min_bid_yocto != null &&
+                    <img style={{ position: "absolute", top: "5px", right: "8px" }} src={require('assets/auction.png')} width="48" height="48" alt="N" />
+                }
                 <p id="listing_title_thumb" style={{ margin: "0px", textAlign: "center", fontSize: "24px" }}>{listing.nft_metadata.title}</p>
                 <p style={{ textAlign: "center", margin: "0px", fontSize: "14px" }}>by {listing.seller_id}</p>
                 <p style={{ fontSize: "12px" }}>STATUS: {
@@ -76,7 +80,10 @@ function HighestBids({ listing }) {
                             return (
                                 <div style={{ fontSize: "14px", display: "flex", justifyContent: "space-between", alignItems: "center", gap: "18px" }}>
                                     <p style={{ margin: "2px" }}>{bid.bidder_id}</p>
-                                    <p style={{ margin: "2px" }}>{yocto_string_to_near(bid.amount_yocto, 1) + " N"}</p>
+                                    <div style={{ display: "flex", justifyContent: "right" }}>
+                                        <p style={{ fontFamily: "var(--eneftigo-mono-font-family)", fontSize:"16px", margin: "2px" }}>{yocto_string_to_near(bid.amount_yocto, 1)}</p>
+                                        <img src={require("assets/near_icon_light.png")} style={{ height: "24px" }} />
+                                    </div>
                                 </div>
                             );
                         })

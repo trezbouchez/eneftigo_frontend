@@ -16,7 +16,7 @@ import { SignInPrompt } from 'components/login/SignInPrompt';
 import NavBar from 'components/navbar/Navbar';
 
 import Home from "components/pages/home/Home";
-import Discover from "components/pages/discover/Discover";
+import Listings from "components/pages/listings/Listings";
 
 import TransactionResult from "components/misc/TransactionResult";
 
@@ -180,7 +180,9 @@ function AppContent() {
                     <Routes>
                         <Route path="/" element={<Home />} />
                         <Route path="/home" element={<Home />} />
-                        <Route path="/discover" element={<Discover />} />
+                        <Route path="/listings" element={<Listings />} />
+                        <Route path="/listings/:sellerId" element={<Listings />} />
+
                     </Routes>
                     <TransactionResult />
                 </div>

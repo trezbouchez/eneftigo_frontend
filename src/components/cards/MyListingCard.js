@@ -9,6 +9,7 @@ import auction from "assets/auction.png";
 import { yocto_string_to_near } from 'helpers'
 import { MyListingDetails } from './MyListingDetails';
 import { EneftigoModal } from 'EneftigoModal';
+import { Link } from "react-router-dom";
 
 const style = {
     position: 'absolute',
@@ -46,7 +47,9 @@ export function MyListingCard({ listing, showDetails, handleShowDetails, handleH
                     <img style={{ position: "absolute", top: "5px", right: "8px" }} src={auction} width="24" height="24" alt="N" />
                 }
                 <p id="listing_title_thumb">{listing.nft_metadata.title}</p>
-                <p style={{fontFamily: "var(--eneftigo-header-font-family)"}}>{listing.seller_id} (you)</p>
+                <Link to={"/home/"} className="site-title" style={{ padding: "0px" }}>
+                    <p style={{ fontFamily: "var(--eneftigo-header-font-family)" }}>{listing.seller_id} (you)</p>
+                </Link>
                 <CardMedia
                     onClick={handleShowDetails}
                     style={{ borderRadius: "4px" }}
@@ -55,13 +58,13 @@ export function MyListingCard({ listing, showDetails, handleShowDetails, handleH
                     image={listing.nft_metadata.media}
                     alt="Media"
                 />
-                <p style={{fontSize: "10px"}}>
-                {
-                    listing.is_secondary ?
-                        "SELLING BY: TODO" :
-                        "AVAILABLE: " + listing.supply_left
-                }
-                </p>                
+                <p style={{ fontSize: "10px" }}>
+                    {
+                        listing.is_secondary ?
+                            "SELLING BY: TODO" :
+                            "AVAILABLE: " + listing.supply_left
+                    }
+                </p>
                 {
                     listing.price_yocto &&
                     <div style={{ marginLeft: "16px", marginRight: "16px", display: "flex", justifyContent: "space-between", alignItems: "center", gap: "18px" }}>

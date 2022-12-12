@@ -1,31 +1,44 @@
 import 'regenerator-runtime/runtime';
 import React, { useState, useContext } from 'react';
+import { useParams } from 'react-router-dom';
 import { Grid } from '@mui/material'
 import { ListingCard } from 'components/cards/ListingCard';
 import { MyListingCard } from 'components/cards/MyListingCard';
 import { useEneftigoContext, useWalletSelectorContext } from 'EneftigoContext';
-import { getPrimaryListings, getSecondaryListings } from 'nearInterface';
+import { getPrimaryListings, getPrimaryListingsBySeller, getSecondaryListings, getSecondaryListingsBySeller } from 'nearInterface';
 import { SectionHeader } from 'components/misc/SectionHeader';
 
 const SHOW_FIRST_ITEMS_COUNT = 5;
 
-export default function Discover() {
-    const [busy, setBusy] = React.useState(true);
-    const [primaryListings, setPrimaryListings] = React.useState([]);
-    const [secondaryListings, setSecondaryListings] = React.useState([]);
-    const [focusedItem, setFocusedItem] = React.useState(null);
-    const [showMorePrimary, setShowMorePrimary] = React.useState(false);
-    const [showMoreSecondary, setShowMoreSecondary] = React.useState(false);
+export default function Listings() {
+    const [busy, setBusy] = useState(true);
+    const [primaryListings, setPrimaryListings] = useState([]);
+    const [secondaryListings, setSecondaryListings] = useState([]);
+    const [focusedItem, setFocusedItem] = useState(null);
+    const [showMorePrimary, setShowMorePrimary] = useState(false);
+    const [showMoreSecondary, setShowMoreSecondary] = useState(false);
 
     const { contractId, selector, account } = useEneftigoContext();
 
+    const { sellerId } = useParams();
+
     // TODO: turn this into useCallback?
+    console.log(sellerId);
     React.useEffect(() => {
         const { network } = selector.options;
-        Promise.all([
-            getPrimaryListings({ selector, contractId }),
-            getSecondaryListings({ selector, contractId })
-        ])
+        let promises;
+        if (sellerId) {
+            promises = [
+                getPrimaryListingsBySeller({ selector, contractId, sellerAccountId: sellerId }),
+                getSecondaryListingsBySeller({ selector, contractId, sellerAccountId: sellerId })
+            ]
+        } else {
+            promises = [
+                getPrimaryListings({ selector, contractId }),
+                getSecondaryListings({ selector, contractId })
+            ]
+        }
+        Promise.all(promises)
             .then((values) => {
                 setPrimaryListings(values[0].map((listing) => {
                     listing.is_secondary = false;
@@ -40,7 +53,7 @@ export default function Discover() {
             .finally(() => {
                 setBusy(false);
             });
-    }, []);
+    }, [sellerId]);
 
     const handleMorePrimary = () => {
         setShowMorePrimary((oldValue) => !oldValue);
@@ -53,12 +66,11 @@ export default function Discover() {
     const shownPrimary = showMorePrimary ? primaryListings : primaryListings.slice(0, Math.min(SHOW_FIRST_ITEMS_COUNT, primaryListings.length));
     const shownSecondary = showMoreSecondary ? secondaryListings : secondaryListings.slice(0, Math.min(SHOW_FIRST_ITEMS_COUNT, secondaryListings.length));
 
-
     return (
         <Grid style={{ padding: '10px', maxHeight: '90vh', overflow: 'auto' }} container justifyContent="center" spacing={5}>
             <Grid key="primary_header" item xs={12} sm={12}>
                 <SectionHeader
-                    title="NEW ITEMS"
+                    title={"NEW ITEMS" + (sellerId ? " BY " + sellerId : "")}
                     showingMore={showMorePrimary}
                     onMoreButton={primaryListings.length > SHOW_FIRST_ITEMS_COUNT ? handleMorePrimary : null}
                 />
@@ -96,7 +108,7 @@ export default function Discover() {
             }
             <Grid key="secondary_header" item xs={12} sm={12}>
                 <SectionHeader
-                    title="PRE-OWNED ITEMS"
+                    title={"PRE-OWNED ITEMS" + (sellerId ? " BY " + sellerId : "")}
                     showingMore={showMoreSecondary}
                     onMoreButton={secondaryListings.length > SHOW_FIRST_ITEMS_COUNT ? handleMoreSecondary : null}
                 />

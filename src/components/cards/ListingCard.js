@@ -9,6 +9,7 @@ import auction from "assets/auction.png";
 import { yocto_string_to_near } from 'helpers'
 import { ListingDetails } from './ListingDetails';
 import { EneftigoModal } from 'EneftigoModal';
+import { Link } from "react-router-dom";
 
 const style = {
     position: 'absolute',
@@ -65,7 +66,9 @@ export function ListingCard({ listing, showDetails, handleShowDetails, handleHid
                     <img style={{ position: "absolute", top: "5px", right: "8px" }} src={auction} width="24" height="24" alt="N" />
                 }
                 <p id="listing_title_thumb">{listing.nft_metadata.title}</p>
-                <p style={{fontFamily: "var(--eneftigo-header-font-family)"}}>{listing.seller_id}</p>
+                <Link to={"/listings/" + listing.seller_id} className="site-title" style={{ padding: "0px" }}>
+                    <p style={{ fontFamily: "var(--eneftigo-header-font-family)" }}>{listing.seller_id}</p>
+                </Link>
                 <CardMedia
                     onClick={handleShowDetails}
                     style={{ borderRadius: "4px" }}
@@ -74,12 +77,12 @@ export function ListingCard({ listing, showDetails, handleShowDetails, handleHid
                     image={listing.nft_metadata.media}
                     alt="Media"
                 />
-                <p style={{fontSize: "10px"}}>
-                {
-                    listing.is_secondary ?
-                        "SELLING BY: TODO" :
-                        "AVAILABLE: " + listing.supply_left
-                }
+                <p style={{ fontSize: "10px" }}>
+                    {
+                        listing.is_secondary ?
+                            "SELLING BY: TODO" :
+                            "AVAILABLE: " + listing.supply_left
+                    }
                 </p>
                 {
                     listing.price_yocto &&
@@ -103,7 +106,7 @@ export function ListingCard({ listing, showDetails, handleShowDetails, handleHid
                                 onChange={(e) => bidValidator(e.target.value)}
                                 autoComplete="off"
                             />
-                            <img src={require("assets/near_icon_light.png")} style={{ height: "26px", margin:"-1px 0px 0px 0px" }} alt="N" />
+                            <img src={require("assets/near_icon_light.png")} style={{ height: "26px", margin: "-1px 0px 0px 0px" }} alt="N" />
                         </div>
                     </div>
                 }

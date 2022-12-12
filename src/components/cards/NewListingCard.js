@@ -22,7 +22,7 @@ export function NewListingCard({ showDetails, handleShowDetails, handleHideDetai
             </div>
             <EneftigoModal
                 open={showDetails}
-                title="LISTING DETAILS"
+                title="LISTING TYPE"
                 handleClose={handleHideDetails}
                 disableAutoFocus={true}
                 content={<NewListingDetails handleClose={handleHideDetails} />}

@@ -30,7 +30,7 @@ export default function Navbar() {
                     <img src={eneftigo_logo} height="40" alt="" />
                 </Link>
                 <CustomLink className="page_link" to="/home">HOME</CustomLink>
-                <CustomLink className="page_link" to="/discover">DISCOVER</CustomLink>
+                <CustomLink className="page_link" to="/listings">DISCOVER</CustomLink>
             </ul>
             <ul>
                 <Balance

@@ -493,7 +493,7 @@ function Timing({ startOption, onStartOptionChanged, durationOption, onDurationO
                     id="auction-start"
                     value={startOption}
                     onChange={handleStartOptionChanged}
-                    style={{ width: "200px" }}
+                    style={{ width: "200px", fontFamily:"var(--eneftigo-header-font-family)", fontSize:"12px" }}
                 >
                     {
                         Array.from({ length: StartOptions.length }, (v, k) => k).map((index) => <MenuItem
@@ -533,7 +533,7 @@ function Timing({ startOption, onStartOptionChanged, durationOption, onDurationO
                     id="auction-duration"
                     value={durationOption}
                     onChange={handleDurationOptionChanged}
-                    style={{ width: "200px" }}
+                    style={{ width: "200px", fontFamily:"var(--eneftigo-header-font-family)", fontSize:"12px" }}
                 >
                     {
                         Array.from({ length: DurationOptions.length }, (v, k) => k).map((index) =>
@@ -548,7 +548,7 @@ function Timing({ startOption, onStartOptionChanged, durationOption, onDurationO
                 </Select>
                 <p>
                     <button style={{ position: "absolute", left: "64px", bottom: "24px" }} onClick={onPrev}>PREV</button>
-                    <button style={{ position: "absolute", right: "64px", bottom: "24px" }} onClick={onNext}>PREVIEW</button> :
+                    <button style={{ position: "absolute", right: "64px", bottom: "24px" }} onClick={onNext}>PREVIEW</button>
                 </p>
             </LocalizationProvider>
         </>
@@ -568,7 +568,7 @@ function Preview({ title, url, quantity, minBid, onPrev, onSubmit }) {
             />
             <p>Offering {quantity} NFTs from {minBid} NEAR up</p>
             <button style={{ position: "absolute", left: "64px", bottom: "24px" }} onClick={onPrev}>PREV</button>
-            <button style={{ position: "absolute", right: "64px", bottom: "24px" }} onClick={onSubmit}>SUBMIT</button> :
+            <button style={{ position: "absolute", right: "64px", bottom: "24px" }} onClick={onSubmit}>SUBMIT</button>
         </>
     );
 }
@@ -612,7 +612,6 @@ function BidInput({ bid, error, onChange }) {
                     error
                     required
                     type="number"
-                    label="min bid amount (Near)"
                     helperText={error}
                     onChange={(e) => onChange(e.target.value)}
                     defaultValue={bid}
@@ -625,7 +624,6 @@ function BidInput({ bid, error, onChange }) {
             <>
                 <TextField
                     required
-                    label="min bid amount (Near)"
                     type="number"
                     onChange={(e) => onChange(e.target.value)}
                     defaultValue={bid}
@@ -644,7 +642,6 @@ function QuantityInput({ quantity, error, onChange }) {
                     error
                     required
                     type="number"
-                    label="Quantity"
                     helperText={error}
                     onChange={(e) => onChange(e.target.value)}
                     pattern="[0-9!]"
@@ -658,7 +655,6 @@ function QuantityInput({ quantity, error, onChange }) {
             <>
                 <TextField
                     required
-                    label="Quantity"
                     type="number"
                     onChange={(e) => onChange(e.target.value)}
                     pattern="[0-9!]"

@@ -14,7 +14,7 @@ export function SignInPrompt({onClick}) {
         just use the button below.
       </p>
       <p style={{ textAlign: 'center' }}>
-        <button onClick={onClick}>SIGN IN WITH NEAR WALLET</button>
+        <button onClick={onClick}>SIGN IN WITH CRYPTO WALLET</button>
       </p>
       <p  style={{ textAlign: 'center' }}>
         Do not worry, this app runs in testnet. Spend as much as you want. It's Monopoly money. The NFTs are the glitter, too.

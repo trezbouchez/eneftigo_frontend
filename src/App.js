@@ -20,7 +20,6 @@ import Listings from "components/pages/listings/Listings";
 
 import TransactionResult from "components/misc/TransactionResult";
 
-
 export default function App() {
     return EneftigoContextAware(AppContent);
 }
@@ -102,9 +101,9 @@ const themeEneftigoDefault = createTheme({
                 root: {
                     margin: '0px',
                     padding: '0px',
-                    textAlign: "right",
+                    textAlign: "center",
                 },
-            }
+            },
         },
         MuiInputBase: {
             styleOverrides: {
@@ -114,7 +113,7 @@ const themeEneftigoDefault = createTheme({
                     padding: '0px',
                     color: 'var(--eneftigo-white)',
                     fontFamily: 'var(--eneftigo-mono-font-family)',
-                    textAlign: "right",
+                    textAlign: "center",
                 },
                 input: {
                     margin: '0px',
@@ -128,13 +127,14 @@ const themeEneftigoDefault = createTheme({
         MuiOutlinedInput: {
             styleOverrides: {
                 input: {
+                    backgroundColor: 'var(--eneftigo-dark-grey)',
                     borderRadius: '3px',
                     margin: 'auto',
                     padding: '0px',
                     color: 'var(--eneftigo-white)',
                     fontFamily: 'var(--eneftigo-mono-font-family)',
-                    fontSize: "17px",
-                    textAlign: "right",
+                    fontSize: "16px",
+                    textAlign: "center",
                 },
                 notchedOutline: {
                     outline: "none",

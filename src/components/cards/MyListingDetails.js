@@ -7,6 +7,7 @@ import { PriceLabel } from "components/misc/Price";
 import * as gas from 'gas';
 import recycle from "assets/recycle.png";
 import auction from "assets/auction.png";
+import { SpotifyLink } from 'components/misc/SpotifyLink';
 
 const humanDate = (timestamp) => {
     if (timestamp) {
@@ -19,6 +20,7 @@ const humanDate = (timestamp) => {
 
 export function MyListingDetails({ listing }) {
 
+    console.log(listing);
     let statusText;
     switch (listing.status) {
         case "Running":
@@ -69,6 +71,11 @@ export function MyListingDetails({ listing }) {
                         </div> :
                         <p style={{ fontSize: "12px" }}>BIDS: Not accepted (fixed-price only)</p>
                 }
+                <div>
+                    <SpotifyLink
+                    initialLink={listing.nft_mutable_metadata.aux_audio_url}
+                    />
+                </div>
                 <div style={{ marginTop: "40px", display: "flex", justifyContent: "space-evenly" }}>
                     <button style={{ /*backgroundColor: "var(--eneftigo-red)", */width: "120px", height: "40px" }} onClick={(e) => console.log("TODO")}>
                         END LISTING

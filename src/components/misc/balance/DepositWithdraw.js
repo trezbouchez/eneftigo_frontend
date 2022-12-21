@@ -108,7 +108,6 @@ function DepositWithdrawContent({ handleClose }) {
                     selector: selector,
                     accountId: account.account_id,
                 }).then((updatedAccountData) => {
-                    console.log("updated balance " + updatedAccountData.amount)
                     const updatedAccount = {
                         account_id: account.account_id,
                         ...updatedAccountData,

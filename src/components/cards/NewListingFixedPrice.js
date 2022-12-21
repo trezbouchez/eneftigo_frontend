@@ -1,22 +1,20 @@
-import React from 'react';
-
-import { Card } from '@mui/material'
-import { Stepper, Step, StepLabel, Button } from '@mui/material'
+import React, { useState } from 'react';
+import { Stepper, Step, StepLabel, Checkbox, FormControlLabel } from '@mui/material'
+import Typography from '@mui/material/styles/createTypography';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import TextField from '@mui/material/TextField';
-import { BounceLoader } from 'react-spinners';
 import { toast } from "react-hot-toast";
-import nft_media_placeholder from 'assets/nft_media_placeholder.png';
-import plus_icon from 'assets/plus_icon.png';
-import { storeImage } from 'nftStorage';
 import { useEneftigoContext } from 'EneftigoContext';
 import { getStorageDeposit, viewAccount, addPrimaryListing } from 'nearInterface';
+import { SpotifyLink } from "components/misc/SpotifyLink";
+import { IpfsImage } from 'components/misc/IpfsImage';
+import { fontSize } from '@mui/system';
 
 const steps = [
     'General',
-    'Asset',
-    'Quantity',
-    'Pricing',
+    'Song',
+    'Conditions',
+    'Preview'
 ];
 
 const theme = createTheme({
@@ -52,11 +50,25 @@ const theme = createTheme({
                     },
                 },
             },
+        },
+        MuiOutlinedInput: {
+            styleOverrides: {
+                input: {
+                    borderRadius: '5px',
+                    margin: 'auto',
+                    padding: '2px',
+                    color: 'var(--eneftigo-white)',
+                    backgroundColor: 'var(--eneftigo-very-dark-grey)',
+                    fontSize: "17px",
+                    textAlign: "center",
+                    borderColor: 'var(--eneftigo-grey)',
+                },
+            },
         }
     }
 });
 
-async function submitListing({ selector, contractId, account, title, mediaUrl, quantity, priceNear, minBidNear }) {
+async function submitListing({ selector, contractId, account, title, imageUrl, auxAudioUrl, quantity, priceNear, minBidNear }) {
     let priceYocto = priceNear ? (BigInt(parseInt(priceNear)) * 10n ** 24n).toString() : null;
     let minBidYocto = minBidNear ? (BigInt(parseInt(minBidNear)) * 10n ** 24n).toString() : null;
     const result = await addPrimaryListing({
@@ -64,7 +76,8 @@ async function submitListing({ selector, contractId, account, title, mediaUrl, q
         contractId,
         accountId: account.account_id,
         title,
-        mediaUrl,
+        imageUrl,
+        auxAudioUrl,
         supplyTotal: quantity,
         priceYocto,
         minBidYocto,
@@ -76,13 +89,14 @@ export default function CreateFixedPriceListing() {
     const [step, setStep] = React.useState(0);
     const { selector, contractId, account, setAccount, setDeposit } = useEneftigoContext();
 
-    const handleSubmit = (title, mediaUrl, quantity, price) => {
+    const handleSubmit = (title, imageUrl, auxAudioUrl, quantity, price) => {
         const promiseChain = submitListing({
             selector: selector,
             contractId: contractId,
             account: account,
             title: title,
-            mediaUrl: mediaUrl,
+            imageUrl: imageUrl,
+            auxAudioUrl: auxAudioUrl,
             quantity: quantity,
             priceNear: price,
         }).then(({ collectionId, updatedDeposit }) => {
@@ -137,21 +151,34 @@ export default function CreateFixedPriceListing() {
 
     return (
         <>
-            <div style={{ textAlign: "center", position: "relative", marginLeft: "auto", marginRight: "auto", borderRadius: 3, p: 1, height: "450px", width: "600px" }}>
-                <Stepper activeStep={step} alternativeLabel>
-                    {steps.map((label) => (
-                        <Step key={label}>
-                            <StepLabel>{label}</StepLabel>
-                        </Step>
-                    ))}
-                </Stepper>
-                <CreatePage
-                    step={step}
-                    onPrev={() => setStep(step - 1)}
-                    onNext={() => setStep(step + 1)}
-                    onSubmit={handleSubmit}
-                    style={{ marginBlockStart: "24px" }}
-                />
+            <div
+                style={{
+                    textAlign: "center",
+                    position: "relative",
+                    marginLeft: "auto",
+                    marginRight: "auto",
+                    borderRadius: 3,
+                    p: 1,
+                    height: "600px",
+                    width: "600px"
+                }}
+            >
+                <ThemeProvider theme={theme}>
+                    <Stepper activeStep={step} alternativeLabel>
+                        {steps.map((label) => (
+                            <Step key={label}>
+                                <StepLabel>{label}</StepLabel>
+                            </Step>
+                        ))}
+                    </Stepper>
+                    <CreatePage
+                        step={step}
+                        onPrev={() => setStep(step - 1)}
+                        onNext={() => setStep(step + 1)}
+                        onSubmit={handleSubmit}
+                        style={{ marginBlockStart: "24px" }}
+                    />
+                </ThemeProvider>
             </div>
         </>
     );
@@ -160,61 +187,71 @@ export default function CreateFixedPriceListing() {
 function CreatePage({ step, onPrev, onNext, onSubmit }) {
 
     const [title, setTitle] = React.useState("");
-    const [mediaUrl, setMediaUrl] = React.useState("");
+    const [imageUrl, setImageUrl] = React.useState(null);
+    const [songLink, setSongLink] = React.useState(null);
+    const [hasRights, setHasRights] = useState(false);
     const [quantity, setQuantity] = React.useState("");
     const [price, setPrice] = React.useState("");
 
     switch (step) {
         case 0:
-            return (<>
-                <CreatePageBasic
-                    title={title}
-                    onTitleChange={(title) => setTitle(title)}
-                    onNext={onNext}
-                />
-            </>);
+            return (
+                <>
+                    <General
+                        title={title}
+                        imageUrl={imageUrl}
+                        onTitleChange={(title) => setTitle(title)}
+                        onImageUrlChange={(url) => setImageUrl(url)}
+                        onNext={onNext}
+                    />
+                </>
+            );
         case 1:
-            return (<>
-                <CreatePageMedia
-                    url={mediaUrl}
-                    onUrlChange={(url) => setMediaUrl(url)}
-                    onPrev={onPrev}
-                    onNext={onNext}
-                />
-            </>);
+            return (
+                <>
+                    <Song
+                        songLink={songLink}
+                        onSongLinkChange={(link) => setSongLink(link)}
+                        hasRights={hasRights}
+                        onHasRightsChange={(has) => setHasRights(has)}
+                        onPrev={onPrev}
+                        onNext={onNext}
+                    />
+                </>
+            );
         case 2:
-            return (<>
-                <CreatePageQuantity
-                    quantity={quantity}
-                    onQuantityChange={(quantity) => setQuantity(quantity)}
-                    onPrev={onPrev}
-                    onNext={onNext}
-                />
-            </>);
+            return (
+                <>
+                    <Parameters
+                        quantity={quantity}
+                        price={price}
+                        onQuantityChange={(quantity) => setQuantity(quantity)}
+                        onPriceChange={(price) => setPrice(price)}
+                        onPrev={onPrev}
+                        onNext={onNext}
+                    />
+                </>
+            );
         case 3:
-            return (<>
-                <CreatePagePricing
-                    price={price}
-                    onPriceChange={(price) => setPrice(price)}
-                    onPrev={onPrev}
-                    onNext={onNext}
-                />
-            </>);
-        case 4:
-            return (<>
-                <CreatePagePreview
-                    title={title}
-                    url={mediaUrl}
-                    quantity={quantity}
-                    price={price}
-                    onPrev={onPrev}
-                    onSubmit={(e) => onSubmit(title, mediaUrl, quantity, price)}
-                />
-            </>);
+            return (
+                <>
+                    <Preview
+                        title={title}
+                        imageUrl={imageUrl}
+                        songLink={songLink}
+                        quantity={quantity}
+                        price={price}
+                        onPrev={onPrev}
+                        onSubmit={(e) => onSubmit(title, imageUrl, songLink, quantity, price)}
+                    />
+                </>
+            );
     }
 }
 
-function CreatePageBasic({ title, onTitleChange, onNext }) {
+function General({ title, imageUrl, onTitleChange, onImageUrlChange, onNext }) {
+
+    console.log(imageUrl);
 
     const titleValidator = (title) => {         // returns error or null
         if (title.length > 0 && title.length < 4) {
@@ -230,16 +267,25 @@ function CreatePageBasic({ title, onTitleChange, onNext }) {
 
     return (
         <>
-            <p style={{ margin: "24px" }}>Your NFT listing needs a title</p>
-            <TitleInput
-                title={title}
-                error={titleError}
-                onChange={(title) => {
-                    setTitleError(titleValidator(title));
-                    onTitleChange(title);
-                }} />
+            <p style={{ fontSize: "12px", opacity: "65%", marginBlockStart: "40px", marginBlockEnd: "12px" }}>Listing Title:</p>
+            <div style={{ margin: "auto", width: "300px" }}>
+                <TitleInput
+                    sx={{ margin: "auto" }}
+                    title={title}
+                    error={titleError}
+                    onChange={(title) => {
+                        setTitleError(titleValidator(title));
+                        onTitleChange(title);
+                    }}
+                />
+            </div>
+            <p style={{ fontSize: "12px", opacity: "65%", marginBlockStart: "40px", marginBlockEnd: "12px" }}>Listing Image:</p>
+            <IpfsImage
+                initialUrl={imageUrl}
+                onImageUrlChange={onImageUrlChange}
+            />
             <p>
-                {titleError === null && title.length > 0 ?
+                {titleError === null && title.length > 0 && imageUrl !== null ?
                     <button style={{ position: "absolute", right: "64px", bottom: "24px" }} onClick={onNext}>NEXT</button> :
                     <button disabled style={{ position: "absolute", right: "64px", bottom: "24px" }} onClick={onNext}>NEXT</button>
                 }
@@ -248,61 +294,48 @@ function CreatePageBasic({ title, onTitleChange, onNext }) {
     );
 }
 
-function CreatePageMedia({ url, onUrlChange, onPrev, onNext }) {
-    const [busy, setBusy] = React.useState(false);
-
-    const onSelectFile = (e) => {
-        var input = document.createElement('input');
-        input.type = 'file';
-        input.accept = "image/png, image/jpeg";
-        input.onchange = (e) => {
-            setBusy(true);
-            const image = e.target.files[0];
-            // Promise.resolve("cid")
-            storeImage(image)
-                .then((cid) => {
-                    setBusy(false);
-                    onUrlChange("https://ipfs.io/ipfs/" + cid);
-                })
-                .catch((error) => {
-                    console.log("ERROR: " + error);
-                })
-        }
-        input.click();
-    };
+function Song({ songLink, onSongLinkChange, hasRights, onHasRightsChange, onPrev, onNext }) {
 
     return (
         <>
-            <p style={{ margin: "24px" }}>It needs an image, too</p>
+            <p style={{ fontSize: "12px", opacity: "65%", marginBlockStart: "40px", marginBlockEnd: "12px" }}>Song:</p>
             <div style={{ position: "relative", textAlign: "center" }}>
-                <img
-                    src={url !== "" ? url : nft_media_placeholder}
-                    width="200"
-                    height="200"
-                    alt="NFT"
-                    onClick={onSelectFile} />
-                {(url === "" && !busy) &&
-                    <img
-                        src={plus_icon}
-                        width="50"
-                        height="50"
-                        style={{ position: "absolute", top: "50%", left: "50%", transform: "translate(-50%, -50%)" }}
-                        onClick={onSelectFile} />
-                }
-                {busy &&
-                    <div><BounceLoader color="#DD3333" style={{ position: "absolute", top: "35%", left: "45%" }} /><p>UPLOADING TO IPFS</p></div>
-                }
+                <SpotifyLink
+                    initialLink={songLink}
+                    onLinkVerified={(link) => {
+                        if (!link)
+                            onHasRightsChange(false);
+                        onSongLinkChange(link);
+                    }}
+                    preferredHeight={"300"}
+                />
+            </div>
+            <div style={{ visibility: songLink ? "visible" : "hidden", position: "relative", textAlign: "center" }}>
+                <FormControlLabel
+                    style={{ margin: "auto", position: "relative", bottom: "24px", color: "var(--eneftigo-light-grey" }}
+                    componentsProps={{ typography: { fontSize: "12px" } }}
+                    control={
+                        <Checkbox
+                            style={{ color: "var(--eneftigo-grey" }}
+                            disabled={!songLink}
+                            checked={hasRights}
+                            onChange={(e) => onHasRightsChange(e.target.checked)}
+                        />
+                    }
+                    label="I hereby declare that I own the copyrights to the submitted song or its part"
+                />
             </div>
             <button style={{ position: "absolute", left: "64px", bottom: "24px" }} onClick={onPrev}>PREV</button>
-            {url !== "" ?
-                <button style={{ position: "absolute", right: "64px", bottom: "24px" }} onClick={onNext}>NEXT</button> :
-                <button disabled style={{ position: "absolute", right: "64px", bottom: "24px" }} onClick={onNext}>NEXT</button>
+            {
+                songLink !== "" && hasRights ?
+                    <button style={{ position: "absolute", right: "64px", bottom: "24px" }} onClick={onNext}>NEXT</button> :
+                    <button disabled style={{ position: "absolute", right: "64px", bottom: "24px" }} onClick={onNext}>NEXT</button>
             }
         </>
     );
 }
 
-function CreatePageQuantity({ quantity, onQuantityChange, onPrev, onNext }) {
+function Parameters({ quantity, price, onQuantityChange, onPriceChange, onPrev, onNext }) {
 
     const quantityValidator = (quantity) => {
         if (quantity !== "" && quantity < 1) {
@@ -314,31 +347,6 @@ function CreatePageQuantity({ quantity, onQuantityChange, onPrev, onNext }) {
         }
     };
 
-    const [quantityError, setQuantityError] = React.useState(quantityValidator(quantity));
-
-    return (
-        <>
-            <p style={{ margin: "24px" }}>How many NFTs do you want to offer?</p>
-            <QuantityInput
-                quantity={quantity}
-                error={quantityError}
-                onChange={(quantity) => {
-                    setQuantityError(quantityValidator(quantity));
-                    onQuantityChange(quantity);
-                }} />
-            <p>
-                <button style={{ position: "absolute", left: "64px", bottom: "24px" }} onClick={onPrev}>PREV</button>
-                {quantityError === null && quantity > 0 ?
-                    <button style={{ position: "absolute", right: "64px", bottom: "24px" }} onClick={onNext}>NEXT</button> :
-                    <button disabled style={{ position: "absolute", right: "64px", bottom: "24px" }} onClick={onNext}>NEXT</button>
-                }
-            </p>
-        </>
-    );
-}
-
-function CreatePagePricing({ price, onPriceChange, onPrev, onNext }) {
-
     const priceValidator = (price) => {
         if (price != "" && price < 1) {
             return "Minimum price is 1 NEAR";
@@ -349,13 +357,22 @@ function CreatePagePricing({ price, onPriceChange, onPrev, onNext }) {
         }
     };
 
+    const [quantityError, setQuantityError] = useState(quantityValidator(quantity));
     const [priceError, setPriceError] = React.useState(priceValidator(price));
 
     return (
         <>
-            <p style={{ margin: "24px" }}>How much NEAR do you want to sell them for (per item)?</p>
+            <p style={{ fontSize: "12px", opacity: "65%", marginBlockStart: "40px", marginBlockEnd: "12px" }}>Number of tokens offered:</p>
+            <QuantityInput
+                initialQuantity={quantity}
+                error={quantityError}
+                onChange={(quantity) => {
+                    setQuantityError(quantityValidator(quantity));
+                    onQuantityChange(quantity);
+                }} />
+            <p style={{ fontSize: "12px", opacity: "65%", marginBlockStart: "40px", marginBlockEnd: "12px" }}>Token price (Near):</p>
             <PriceInput
-                price={price}
+                initialPrice={price}
                 error={priceError}
                 onChange={(price) => {
                     setPriceError(priceValidator(price));
@@ -363,29 +380,32 @@ function CreatePagePricing({ price, onPriceChange, onPrev, onNext }) {
                 }} />
             <p>
                 <button style={{ position: "absolute", left: "64px", bottom: "24px" }} onClick={onPrev}>PREV</button>
-                {priceError === null && price > 0 ?
-                    <button style={{ position: "absolute", right: "64px", bottom: "24px" }} onClick={onNext}>PREVIEW</button> :
-                    <button disabled style={{ position: "absolute", right: "64px", bottom: "24px" }} onClick={onNext}>PREVIEW</button>
+                {
+                    !quantityError && quantity > 0 && !priceError && price > 0 ?
+                        <button style={{ position: "absolute", right: "64px", bottom: "24px" }} onClick={onNext}>NEXT</button> :
+                        <button disabled style={{ position: "absolute", right: "64px", bottom: "24px" }} onClick={onNext}>NEXT</button>
                 }
             </p>
         </>
     );
 }
 
-function CreatePagePreview({ title, url, quantity, price, onPrev, onSubmit }) {
+function Preview({ title, imageUrl, songLink, quantity, price, onPrev, onSubmit }) {
     return (
         <>
-            <p>You are just about to place the NFT listing:</p>
+            <p style={{ fontSize: "12px", opacity: "65%", marginBlockStart: "40px", marginBlockEnd: "12px" }}>You are just about to submit the NFT listing:</p>
             <p>{title}</p>
-            <img
-                src={url}
-                width="200"
-                height="200"
-                alt="MEDIA"
+            <IpfsImage
+                initialUrl={imageUrl}
             />
+            <div style={{ marginTop: "24px" }}>
+                <SpotifyLink
+                    initialLink={songLink}
+                />
+            </div>
             <p>Listing {quantity} NFTs for {price} NEAR each</p>
             <button style={{ position: "absolute", left: "64px", bottom: "24px" }} onClick={onPrev}>PREV</button>
-            <button style={{ position: "absolute", right: "64px", bottom: "24px" }} onClick={onSubmit}>SUBMIT</button> :
+            <button style={{ position: "absolute", right: "64px", bottom: "24px" }} onClick={onSubmit}>SUBMIT</button>
         </>
     );
 }
@@ -395,9 +415,9 @@ function TitleInput({ title, error, onChange }) {
         return (
             <>
                 <TextField
+                    fullWidth
                     error
                     required
-                    label="Title"
                     helperText={error}
                     onChange={(e) => onChange(e.target.value)}
                     defaultValue={title}
@@ -409,8 +429,8 @@ function TitleInput({ title, error, onChange }) {
         return (
             <>
                 <TextField
+                    fullWidth
                     required
-                    label="Title"
                     onChange={(e) => onChange(e.target.value)}
                     defaultValue={title}
                     autoComplete="off"
@@ -420,68 +440,52 @@ function TitleInput({ title, error, onChange }) {
     }
 }
 
-function PriceInput({ price, error, onChange }) {
-    if (error !== null) {
-        return (
-            <>
-                <TextField
-                    error
-                    required
-                    type="number"
-                    label="Price"
-                    helperText={error}
-                    onChange={(e) => onChange(e.target.value)}
-                    defaultValue={price}
-                    autoComplete="off"
-                />
-            </>
-        );
-    } else {
-        return (
-            <>
-                <TextField
-                    required
-                    label="Price"
-                    type="number"
-                    onChange={(e) => onChange(e.target.value)}
-                    defaultValue={price}
-                    autoComplete="off"
-                />
-            </>
-        );
-    }
+
+function QuantityInput({ initialQuantity, error, onChange }) {
+
+    const [quantity, setQuantity] = useState(initialQuantity);
+
+    const validator = (text) => {
+        const onlyDigits = text.match('([0-9]{0,4})')[0];
+        const number = Number(onlyDigits);
+        setQuantity(number);
+        onChange(number.toString());
+    };
+
+    return (
+        <>
+            <TextField
+                error={error !== null}
+                required
+                helperText={error}
+                onChange={(e) => validator(e.target.value)}
+                pattern="[0-9!]"
+                value={quantity}
+                autoComplete="off"
+            />
+        </>
+    );
 }
 
-function QuantityInput({ quantity, error, onChange }) {
-    if (error !== null) {
-        return (
-            <>
-                <TextField
-                    error
-                    required
-                    type="number"
-                    label="Quantity"
-                    helperText={error}
-                    onChange={(e) => onChange(e.target.value)}
-                    pattern="[0-9!]"
-                    defaultValue={quantity}
-                    autoComplete="off"
-                />
-            </>
-        );
-    } else {
-        return (
-            <>
-                <TextField
-                    required
-                    label="Quantity"
-                    type="number"
-                    onChange={(e) => onChange(e.target.value)}
-                    pattern="[0-9!]"
-                    defaultValue={quantity}
-                    autoComplete="off"
-                />
-            </>
-        );
-    }
+function PriceInput({ initialPrice, error, onChange }) {
+    const [price, setPrice] = useState(initialPrice);
+
+    const validator = (text) => {
+        const onlyDigitsAndPoint = text.match('([0-9]*)[.]?([0-9]?)')[0];
+        setPrice(onlyDigitsAndPoint);
+        onChange(onlyDigitsAndPoint.toString());
+    };
+
+    return (
+        <>
+            <TextField
+                error={error !== null}
+                required
+                helperText={error}
+                onChange={(e) => validator(e.target.value)}
+                value={price}
+                autoComplete="off"
+            />
+        </>
+    );
 }

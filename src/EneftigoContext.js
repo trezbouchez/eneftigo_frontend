@@ -24,6 +24,7 @@ export function EneftigoContextAware(Content) {
     const [account, setAccount] = useState(null);               // selected account data 
     const [collectibles, setCollectibles] = useState([]);
     const [deposit, setDeposit] = useState((0, false));
+    // const [spotifyApi, setSpotifyApi] = useState(null);      // unfortunately Spotify IFrameAPI only works for podcasts as of today
 
     const init = useCallback(async () => {
         const _selector = await setupWalletSelector({
@@ -56,7 +57,7 @@ export function EneftigoContextAware(Content) {
                 }),
             ],
         });
-        const _modal = setupModal(_selector, { 
+        const _modal = setupModal(_selector, {
             contractId: CONTRACT_ID,
             theme: "dark"
         });
@@ -93,9 +94,9 @@ export function EneftigoContextAware(Content) {
         Promise
             .all([
                 viewAccount({ selector: selector, accountId: accountId }),
-                getEneftigoCollectibles({ 
-                    selector: selector, 
-                    contractId: "nft." + CONTRACT_ID, 
+                getEneftigoCollectibles({
+                    selector: selector,
+                    contractId: "nft." + CONTRACT_ID,
                     accountId: accountId,
                 }),
                 getStorageDeposit({
@@ -106,9 +107,9 @@ export function EneftigoContextAware(Content) {
             ])
             .then((values) => {
                 const accountData = values[0];
-                const _account = { 
-                    account_id: accountId, 
-                    ...accountData, 
+                const _account = {
+                    account_id: accountId,
+                    ...accountData,
                 };
                 setAccount(_account);
                 setLoading(false);
@@ -134,12 +135,18 @@ export function EneftigoContextAware(Content) {
         return () => subscription.unsubscribe();
     }, [selector]);
 
+    // useEffect(() => {
+    //     window.onSpotifyIframeApiReady = (api) => {
+    //         setSpotifyApi(api);
+    //     };
+    // }, []);
+
     if (!selector || !modal) {
         return null;
     }
 
     const contractId = CONTRACT_ID;
-    
+
     return (
         <EneftigoContext.Provider
             value={{
@@ -151,6 +158,7 @@ export function EneftigoContextAware(Content) {
                 account,
                 collectibles,
                 deposit,
+                // spotifyApi,
                 setAccount,
                 setDeposit,
             }}>

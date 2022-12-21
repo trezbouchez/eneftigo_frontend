@@ -110,11 +110,21 @@ export default function Home() {
                         </p>
                     </Grid>
                 }
-                {collectibles.map((nft) => (
-                    <Grid key={(nft.collection_id + ":" + nft.token_id)} item>
-                        <NftCard nft={nft} />
-                    </Grid>
-                ))}
+                {
+                    collectibles.map((nft) => {
+                        const key = nft.collection_id + ":" + nft.token_id;
+                        return (
+                            <Grid key={key} item>
+                                <NftCard
+                                    nft={nft}
+                                    showDetails={key === focusedItem}
+                                    handleShowDetails={() => setFocusedItem(key)}
+                                    handleHideDetails={() => setFocusedItem(null)}
+                                />
+                            </Grid>
+                        )
+                    })
+                }
             </Grid>
         </div>
     );

@@ -84,6 +84,7 @@ async function submitListing({ selector, contractId, account, nft, title, priceN
     let msg = {
         action: "add_listing",
         token_metadata: nft.metadata,
+        token_mutable_metadata: nft.mutable_metadata,
         price_yocto: priceYocto,
         min_bid_yocto: minBidYocto,
         start_date,

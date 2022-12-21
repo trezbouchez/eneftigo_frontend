@@ -22,8 +22,6 @@ export default function Listings() {
 
     const { sellerId } = useParams();
 
-    // TODO: turn this into useCallback?
-    console.log(sellerId);
     React.useEffect(() => {
         const { network } = selector.options;
         let promises;

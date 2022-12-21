@@ -81,7 +81,6 @@ const theme = createTheme({
         },
         MuiOutlinedInput: {
             styleOverrides: {
-
                 input: {
                     borderRadius: '5px',
                     margin: 'auto',
@@ -97,14 +96,15 @@ const theme = createTheme({
     }
 });
 
-async function submitListing({ selector, contractId, account, title, mediaUrl, quantity, minBidNear, startDate, endDate }) {
+async function submitListing({ selector, contractId, account, title, imageUrl, auxAudioUrl, quantity, minBidNear, startDate, endDate }) {
     let minBidYocto = minBidNear ? (BigInt(parseInt(minBidNear)) * 10n ** 24n).toString() : null;
     const result = await addPrimaryListing({
         selector,
         contractId,
         accountId: account.account_id,
         title,
-        mediaUrl,
+        imageUrl,
+        auxAudioUrl,
         supplyTotal: quantity,
         minBidYocto,
         startDate,
@@ -117,7 +117,7 @@ export default function CreateAuctionListing() {
     const [step, setStep] = React.useState(0);
     const { selector, contractId, account, setAccount, setDeposit } = useEneftigoContext();
 
-    const handleSubmit = ({ title, mediaUrl, quantity, minBidNear, startOption, durationOption }) => {
+    const handleSubmit = ({ title, imageUrl, auxAudioUrl, quantity, minBidNear, startOption, durationOption }) => {
         let startDate;
         switch (startOption) {
             case 0: startDate = null; break;  // now
@@ -141,7 +141,8 @@ export default function CreateAuctionListing() {
             contractId: contractId,
             account: account,
             title: title,
-            mediaUrl: mediaUrl,
+            imageUrl: imageUrl,
+            auxAudioUrl: auxAudioUrl,
             quantity: quantity,
             minBidNear: minBidNear,
             startDate: startDate,
@@ -221,7 +222,8 @@ export default function CreateAuctionListing() {
 function CreatePage({ step, onPrev, onNext, onSubmit }) {
 
     const [title, setTitle] = React.useState("");
-    const [mediaUrl, setMediaUrl] = React.useState("");
+    const [imageUrl, setImageUrl] = React.useState("");
+    const [auxAudioUrl, setAuxAudioUrl] = React.useState("");
     const [quantity, setQuantity] = React.useState("");
     const [minBid, setMinBid] = React.useState("");
     const [startOption, setStartOption] = React.useState(0);
@@ -241,9 +243,9 @@ function CreatePage({ step, onPrev, onNext, onSubmit }) {
         case 1:
             return (
                 <>
-                    <Media
-                        url={mediaUrl}
-                        onUrlChange={(url) => setMediaUrl(url)}
+                    <Image
+                        url={imageUrl}
+                        onUrlChange={(url) => setImageUrl(url)}
                         onPrev={onPrev}
                         onNext={onNext}
                     />
@@ -289,7 +291,8 @@ function CreatePage({ step, onPrev, onNext, onSubmit }) {
             return (<>
                 <Preview
                     title={title}
-                    url={mediaUrl}
+                    image={imageUrl}
+                    auxAudioUrl={auxAudioUrl}
                     quantity={quantity}
                     minBid={minBid}
                     startOption={startOption}
@@ -298,7 +301,8 @@ function CreatePage({ step, onPrev, onNext, onSubmit }) {
                     onSubmit={(e) => onSubmit(
                         {
                             title: title,
-                            mediaUrl: mediaUrl,
+                            imageUrl: imageUrl,
+                            auxAudioUrl: auxAudioUrl,
                             quantity: quantity,
                             minBidNear: minBid,
                             startOption: startOption,
@@ -345,7 +349,7 @@ function Basic({ title, onTitleChange, onNext }) {
     );
 }
 
-function Media({ url, onUrlChange, onPrev, onNext }) {
+function Image({ url, onUrlChange, onPrev, onNext }) {
     const [busy, setBusy] = React.useState(false);
 
     const onSelectFile = (e) => {
@@ -555,13 +559,13 @@ function Timing({ startOption, onStartOptionChanged, durationOption, onDurationO
     );
 }
 
-function Preview({ title, url, quantity, minBid, onPrev, onSubmit }) {
+function Preview({ title, imageUrl, auxAudioUrl, quantity, minBid, onPrev, onSubmit }) {
     return (
         <>
             <p>You are just about to submit the NFT auction:</p>
             <p>{title}</p>
             <img
-                src={url}
+                src={imageUrl}
                 width="200"
                 height="200"
                 alt="MEDIA"
